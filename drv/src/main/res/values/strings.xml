@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">draggable-recyclerview</string>
+  <string name="app_name">DraggableRecyclerView</string>
+  <string name="app_drag_mode">排序模式</string>
+  <string name="app_grid_mode">网格布局</string>
 </resources>
