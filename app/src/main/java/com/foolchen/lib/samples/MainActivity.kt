@@ -1,6 +1,8 @@
 package com.foolchen.lib.samples
 
 import android.graphics.Color
+import android.graphics.Rect
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
@@ -11,6 +13,7 @@ import android.widget.Toast
 import com.foolchen.lib.drv.DragDropCallBack
 import com.foolchen.lib.drv.DragDropHelper
 import com.foolchen.lib.drv.DragDropHolderHelper
+import com.foolchen.lib.drv.IShadow
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.layout_item_name_view_holder.view.*
 
@@ -20,11 +23,11 @@ class MainActivity : AppCompatActivity(), DragDropCallBack {
   private val mAdapter: NamesAdapter = NamesAdapter()
   private val mHelper: DragDropHelper = DragDropHelper(this)
   private var isGridMode = false
+  private var mShadowDrawable: Drawable? = null
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
-
     for (position in 0 until 100) {
       mNames.add("Name $position")
     }
@@ -34,8 +37,8 @@ class MainActivity : AppCompatActivity(), DragDropCallBack {
     }
     mRecyclerView.layoutManager = mLayoutManager
     mRecyclerView.adapter = mAdapter
-
     mHelper.attachToRecyclerView(mRecyclerView)
+    mShadowDrawable = ContextCompat.getDrawable(this, R.drawable.drawable_stroke)
   }
 
   override fun onDestroy() {
@@ -93,7 +96,9 @@ class MainActivity : AppCompatActivity(), DragDropCallBack {
   }
 
   inner class NameViewHolder(itemView: View) : RecyclerView.ViewHolder(
-      itemView), DragDropHolderHelper {
+      itemView), DragDropHolderHelper, IShadow {
+    private val mRect = Rect()
+
     init {
       mHelper.attachToViewHolder(this)
       itemView.setOnClickListener {
@@ -124,6 +129,12 @@ class MainActivity : AppCompatActivity(), DragDropCallBack {
 
     override fun onDraggingModeStop() {
       onBindView()
+    }
+
+    override fun getShadow(): Drawable? {
+      mRect.set(itemView.left + 10, itemView.top + 10, itemView.right - 10, itemView.bottom - 10)
+      mShadowDrawable?.bounds = mRect
+      return mShadowDrawable
     }
   }
 

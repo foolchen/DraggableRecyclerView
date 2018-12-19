@@ -1,5 +1,7 @@
 package com.foolchen.lib.drv
 
+import android.graphics.Canvas
+import android.graphics.drawable.Drawable
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
@@ -48,6 +50,10 @@ class DragDropHelper(callback: DragDropCallBack) {
       mInDraggingMode = false
       onDraggingModeStop()
     }
+  }
+
+  fun setShadow(shadow: Drawable? = null) {
+    mItemTouchHelperCallBack.shadow = shadow
   }
 
   fun isInDragMode(): Boolean = mInDraggingMode
@@ -108,7 +114,7 @@ class DragDropHelper(callback: DragDropCallBack) {
 }
 
 private class InternalDragDropCallBack(
-    val callback: DragDropCallBack) : ItemTouchHelper.Callback() {
+    val callback: DragDropCallBack, var shadow: Drawable? = null) : ItemTouchHelper.Callback() {
   // Should return a composite flag which defines the enabled swap directions in each state (idle, swiping, dragging).
   // 返回定义的标识，用于标识ViewHolder当前的状态
   override fun getMovementFlags(rv: RecyclerView, holder: RecyclerView.ViewHolder): Int {
@@ -169,4 +175,19 @@ private class InternalDragDropCallBack(
   override fun isItemViewSwipeEnabled(): Boolean {
     return false
   }
+
+  override fun onChildDraw(
+      c: Canvas,
+      recyclerView: RecyclerView,
+      viewHolder: RecyclerView.ViewHolder,
+      dX: Float,
+      dY: Float,
+      actionState: Int,
+      isCurrentlyActive: Boolean
+  ) {
+    (viewHolder as? IShadow)?.getShadow()?.draw(c)
+
+    super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+  }
+
 }
