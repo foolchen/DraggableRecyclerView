@@ -2,7 +2,6 @@ package com.foolchen.lib.drv
 
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
-import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.MotionEvent
@@ -119,12 +118,14 @@ private class InternalDragDropCallBack(
   // 返回定义的标识，用于标识ViewHolder当前的状态
   override fun getMovementFlags(rv: RecyclerView, holder: RecyclerView.ViewHolder): Int {
     return if ((holder as? DragDropHolderHelper)?.isDraggable() != false) {
-      val dragFlags: Int = if (rv.layoutManager is GridLayoutManager) {
+      /*val dragFlags: Int = if (rv.layoutManager is GridLayoutManager) {
         ItemTouchHelper.UP or ItemTouchHelper.DOWN or ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
       } else {
         ItemTouchHelper.UP or ItemTouchHelper.DOWN
-      }
-      makeMovementFlags(dragFlags, 0) // swipeFlags = 0，表示不处理滑动事件
+      }*/
+      makeMovementFlags(
+          ItemTouchHelper.UP or ItemTouchHelper.DOWN or ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT,
+          0) // swipeFlags = 0，表示不处理滑动事件
     } else {
       makeMovementFlags(0, 0)
     }
